@@ -96,7 +96,12 @@ export default class ChatMessage extends Component {
       }
 
       _chatMessageDecorators.forEach((decorator) => {
-        decorator.call(this, this.messageContainer, this.args.channel);
+        decorator.call(
+          this,
+          this.messageContainer,
+          this.args.channel,
+          this.args.message
+        );
       });
     });
   }
