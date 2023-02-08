@@ -3,26 +3,26 @@ import { emojiUnescape } from "discourse/lib/text";
 import { until } from "discourse/lib/formatter";
 
 export function updateUserStatusOnMention(mention, status, currentUser) {
-  removeUserStatus(mention);
+  removeStatus(mention);
   if (status) {
-    insertUserStatus(mention, status, currentUser);
+    const html = statusHtml(status, currentUser);
+    mention.insertAdjacentHTML("beforeend", html);
   }
 }
 
-function insertUserStatus(mention, status, currentUser) {
-  const emoji = escapeExpression(`:${status.emoji}:`);
-  const statusHtml = emojiUnescape(emoji, {
-    class: "user-status",
-    title: userStatusTitle(status, currentUser),
-  });
-  mention.insertAdjacentHTML("beforeend", statusHtml);
-}
-
-function removeUserStatus(mention) {
+function removeStatus(mention) {
   mention.querySelector("img.user-status")?.remove();
 }
 
-function userStatusTitle(status, currentUser) {
+function statusHtml(status, currentUser) {
+  const emoji = escapeExpression(`:${status.emoji}:`);
+  return emojiUnescape(emoji, {
+    class: "user-status",
+    title: statusTitle(status, currentUser),
+  });
+}
+
+function statusTitle(status, currentUser) {
   if (!status.ends_at) {
     return status.description;
   }
