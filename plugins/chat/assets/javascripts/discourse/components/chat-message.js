@@ -43,6 +43,15 @@ export default class ChatMessage extends Component {
 
   @optionalService adminTools;
 
+  constructor() {
+    super(...arguments);
+
+    this.message.mentioned_users.forEach((user) => {
+      user.trackStatus();
+      user.on?.("status-changed", this, "_refreshStatusesOnMentions");
+    });
+  }
+
   get pane() {
     return this.args.context === MESSAGE_CONTEXT_THREAD
       ? this.chatChannelThreadPane
@@ -86,6 +95,15 @@ export default class ChatMessage extends Component {
   @action
   teardownChatMessage() {
     cancel(this._invitationSentTimer);
+
+    this.message.mentioned_users.forEach((user) => {
+      user.stopTrackingStatus();
+      user.off?.("status-changed", this, "_refreshStatusesOnMentions");
+    });
+  }
+
+  _refreshStatusesOnMentions() {
+    this._refreshedMessage(this.message);
   }
 
   @action

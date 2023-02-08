@@ -21,6 +21,7 @@ import {
 } from "discourse/lib/user-presence";
 import isZoomed from "discourse/plugins/chat/discourse/lib/zoom-check";
 import { tracked } from "@glimmer/tracking";
+import User from "discourse/models/user";
 
 const PAGE_SIZE = 50;
 const PAST = "past";
@@ -968,5 +969,11 @@ export default class ChatLivePane extends Component {
     const containerRect = container.getBoundingClientRect();
     // - 1.0 to account for rounding errors, especially on firefox
     return rect.bottom - 1.0 <= containerRect.bottom;
+  }
+
+  _initUserModels(message) {
+    message.mentioned_users = message.mentioned_users.map((userAttrs) =>
+      User.create(userAttrs)
+    );
   }
 }
