@@ -164,10 +164,10 @@ export default {
     const mentions = element.querySelectorAll(`a.mention`);
     mentions.forEach((mention) => {
       // fixme andrei call here _updateUserStatus instead
-      const status = {
-        description: "surfing",
-        emoji: "surfing_man",
-      };
+      if (!message.mentioned_users || !message.mentioned_users.length === 0) {
+        return;
+      }
+      const status = message.mentioned_users[0].status;
       mention.querySelector("img.user-status")?.remove();
       if (status) {
         const emoji = escapeExpression(`:${status.emoji}:`);
