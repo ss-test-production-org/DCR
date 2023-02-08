@@ -6,8 +6,7 @@ import DiscourseURL from "discourse/lib/url";
 import { samePrefix } from "discourse-common/lib/get-url";
 import loadScript from "discourse/lib/load-script";
 import { spinnerHTML } from "discourse/helpers/loading-spinner";
-import { escapeExpression } from "discourse/lib/utilities";
-import { emojiUnescape } from "discourse/lib/text";
+import { updateUserStatusOnMention } from "discourse/lib/update-user-status-on-mention";
 
 export default {
   name: "chat-decorators",
@@ -163,51 +162,11 @@ export default {
   _addUserStatusToMentions(element, chatChannel, message) {
     const mentions = element.querySelectorAll(`a.mention`);
     mentions.forEach((mention) => {
-      // fixme andrei call here _updateUserStatus instead
       if (!message.mentioned_users || !message.mentioned_users.length === 0) {
         return;
       }
-      const status = message.mentioned_users[0].status;
-      mention.querySelector("img.user-status")?.remove();
-      if (status) {
-        const emoji = escapeExpression(`:${status.emoji}:`);
-        const statusHtml = emojiUnescape(emoji, {
-          class: "user-status",
-          title: status.description,
-        });
-        mention.insertAdjacentHTML("beforeend", statusHtml);
-      }
+      const status = message.mentioned_users[0].status; // fixme andrei
+      updateUserStatusOnMention(mention, status, this.currentUser);
     });
-  },
-
-  // _rerenderUserStatusOnMentions() {
-  //   // this._post()?.mentioned_users?.forEach((user) =>
-  //   //   this._rerenderUserStatusOnMention(this.cookedDiv, user)
-  //   // );
-  // },
-  //
-  // _rerenderUserStatusOnMention(element, user) {
-  //   // const href = getURL(`/u/${user.username.toLowerCase()}`);
-  //   const mentions = element.querySelectorAll(`a.mention[href="${href}"]`);
-  //
-  //   mentions.forEach((mention) => {
-  //     this._updateUserStatus(mention, user.status);
-  //   });
-  // },
-
-  _updateUserStatus(mention, status) {
-    this._removeUserStatus(mention);
-    if (status) {
-      this._insertUserStatus(mention, status);
-    }
-  },
-
-  _insertUserStatus(mention, status) {
-    const emoji = escapeExpression(`:${status.emoji}:`);
-    const statusHtml = emojiUnescape(emoji, {
-      class: "user-status",
-      title: this._userStatusTitle(status),
-    });
-    mention.insertAdjacentHTML("beforeend", statusHtml);
   },
 };
