@@ -160,13 +160,13 @@ export default {
   },
 
   _addUserStatusToMentions(element, chatChannel, message) {
-    const mentions = element.querySelectorAll(`a.mention`);
-    mentions.forEach((mention) => {
-      if (!message.mentioned_users || !message.mentioned_users.length === 0) {
-        return;
-      }
-      const status = message.mentioned_users[0].status; // fixme andrei
-      updateUserStatusOnMention(mention, status, this.currentUser);
+    message.mentioned_users.forEach((user) => {
+      const href = `/u/${user.username.toLowerCase()}`;
+      const mentions = element.querySelectorAll(`a.mention[href="${href}"]`);
+
+      mentions.forEach((mention) => {
+        updateUserStatusOnMention(mention, user.status, this.currentUser);
+      });
     });
   },
 };
