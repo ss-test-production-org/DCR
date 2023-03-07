@@ -160,7 +160,8 @@ export default {
   },
 
   _addUserStatusToMentions(element, chatChannel, message) {
-    message.mentioned_users.forEach((user) => {
+    // fixme andrei get rid of safe navigation
+    message.mentioned_users?.forEach((user) => {
       const href = `/u/${user.username.toLowerCase()}`;
       const mentions = element.querySelectorAll(`a.mention[href="${href}"]`);
 
