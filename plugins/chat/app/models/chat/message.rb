@@ -75,10 +75,6 @@ module Chat
 
     def self.polymorphic_class_mapping = { "ChatMessage" => Chat::Message }
 
-    def mentions
-      PrettyText.extract_mentions(Nokogiri::HTML5.fragment(cooked))
-    end
-
     def validate_message(has_uploads:)
       WatchedWordsValidator.new(attributes: [:message]).validate(self)
 

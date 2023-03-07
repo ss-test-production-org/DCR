@@ -27,7 +27,7 @@ module Chat
 
     def mentioned_users
       User
-        .where(username: object.mentions)
+        .where(id: object.chat_mentions.pluck(:user_id))
         .map { |user| BasicUserWithStatusSerializer.new(user, root: false) }
     end
 
