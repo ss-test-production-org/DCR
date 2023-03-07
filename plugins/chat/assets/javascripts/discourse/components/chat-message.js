@@ -46,9 +46,9 @@ export default class ChatMessage extends Component {
   constructor() {
     super(...arguments);
 
-    this.args.message.mentioned_users?.forEach((user) => {
+    this.args.message.mentionedUsers.forEach((user) => {
       user.trackStatus();
-      user.on?.("status-changed", this, "_refreshStatusesOnMentions");
+      user.on("status-changed", this, "_refreshStatusesOnMentions");
     });
   }
 
@@ -96,9 +96,9 @@ export default class ChatMessage extends Component {
   teardownChatMessage() {
     cancel(this._invitationSentTimer);
 
-    this.args.message.mentioned_users?.forEach((user) => {
+    this.args.message.mentionedUsers.forEach((user) => {
       user.stopTrackingStatus();
-      user.off?.("status-changed", this, "_refreshStatusesOnMentions");
+      user.off("status-changed", this, "_refreshStatusesOnMentions");
     });
   }
 

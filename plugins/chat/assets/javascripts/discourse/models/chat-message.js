@@ -81,6 +81,9 @@ export default class ChatMessage {
     this.uploads = new TrackedArray(args.uploads || []);
     this.user = this.#initUserModel(args.user);
     this.bookmark = args.bookmark ? Bookmark.create(args.bookmark) : null;
+    this.mentionedUsers = args.mentioned_users.map((userData) =>
+      User.create(userData)
+    );
   }
 
   get threadRouteModels() {
