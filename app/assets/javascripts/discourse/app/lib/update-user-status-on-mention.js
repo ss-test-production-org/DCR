@@ -27,10 +27,10 @@ function statusTitle(status, currentUser) {
     return status.description;
   }
 
-  const until_ = until(
-    status.ends_at,
-    currentUser.timezone,
-    currentUser.locale
-  );
+  const timezone = currentUser
+    ? currentUser.user_option?.timezone
+    : moment.tz.guess();
+
+  const until_ = until(status.ends_at, timezone, currentUser?.locale);
   return escapeExpression(`${status.description} ${until_}`);
 }
