@@ -35,7 +35,7 @@ export default class AssistantItem extends Component {
 
   // this could be renamed to something more practical
   get tags() {
-    if (!this.args.tag || this.args.additionalTags) {
+    if (!this.args.tag || !this.args.additionalTags) {
       return;
     }
 

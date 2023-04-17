@@ -28,12 +28,14 @@
         </span>
       {{/if}}
     {{else if @tag}}
-      {{#if (and @isIntersection @additionalTags?.length)}}
+      {{log "in here"}}
+      {{#if (and @isIntersection @additionalTags.length)}}
         <span class="search-item-tag">{{this.tags}}</span>
       {{else}}
         <span class="search-item-tag">
           {{d-icon "tag"}}
-          {{d-icon @tag}}
+          {{log @tag}}
+          {{@tag}}
         </span>
       {{/if}}
     {{else if @user}}
@@ -45,7 +47,11 @@
           username=@user.username
         }}
         <span class="username">{{this.formattedUsername}}</span>
-        {{@suffix}}
+        {{#if @suffix}}
+          <span class="label-suffix">
+            {{@suffix}}
+          </span>
+        {{/if}}
       </span>
     {{else}}
       <span class="search-item-slug">{{this.labelOrSlug}}</span>

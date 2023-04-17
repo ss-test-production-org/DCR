@@ -30,6 +30,8 @@ export default class Assistant extends Component {
 
   suggestionType;
   prefix;
+  //  we need access to the shorcuts in the view
+  suggestionShortcuts = suggestionShortcuts;
 
   constructor() {
     super(...arguments);
@@ -53,11 +55,18 @@ export default class Assistant extends Component {
     this.attributesForSuggestionKeyword();
   }
 
-  @action
-  prefixForResult(result) {
+  get userMatchesInTopic() {
+    return (
+      this.args.results.length === 1 &&
+      this.router.currentRouteName.startsWith("topic.")
+    );
+  }
+
+  isSuggestionKeyword(item) {
     debugger;
-    return result;
-    // when we loop through each result, set the prefix for each item
+    return (
+      item.includes(this.args.suggestionKeyword) || !this.args.suggestionKeyword
+    );
   }
 
   attributesForSuggestionKeyword() {
@@ -69,6 +78,7 @@ export default class Assistant extends Component {
       }
     }
 
+    console.log(this.args.suggestionKeyword);
     switch (this.args.suggestionKeyword) {
       case "+":
         this.args.results.forEach((result) => {
@@ -81,109 +91,44 @@ export default class Assistant extends Component {
           if (this.prefix.length) {
             this.prefix = `${this.prefix} `;
           }
-          //content.push(
-          //this.attach("search-menu-assistant-item", {
-          //prefix: this.prefix,
-          //tag: item.tagName,
-          //additionalTags: item.additionalTags,
-          //category: item.category,
-          //slug: this.args.term,
-          //withInLabel: this.args.withInLabel,
-          //isIntersection: true,
-          //})
-          //);
         });
+
         this.suggestionType =
           SUGGESTION_KEYWORD_MAP[this.args.suggestionKeyword];
         break;
       case "#":
-        this.args.results.forEach((item) => {
-          console.log(item);
-          if (item.model) {
-            const fullSlug = item.model.parentCategory
-              ? `#${item.model.parentCategory.slug}:${item.model.slug}`
-              : `#${item.model.slug}`;
-            //this.categoryPrefix =
-            //content.push(
-            //this.attach("search-menu-assistant-item", {
-            //prefix: this.prefix,
-            //category: item.model,
-            //slug: `${this.prefix}${fullSlug}`,
-            //withInLabel: this.args.withInLabel,
-            //})
-            //);
-          } else {
-            //content.push(
-            //this.attach("search-menu-assistant-item", {
-            //prefix: this.prefix,
-            //tag: item.name,
-            //slug: `${this.prefix}#${item.name}`,
-            //withInLabel: this.args.withInLabel,
-            //})
-            //);
+        // For all results that are a category we need to assign
+        // a 'fullSlug' for each object. It would place too much logic
+        // to do this on the fly within the view so instead we build
+        // a 'fullSlugForCategoryMap' which we can then
+        // access in the view by 'category.id'
+        this.fullSlugForCategoryMap = {};
+        this.args.results.forEach((result) => {
+          if (result.model) {
+            const fullSlug = result.model.parentCategory
+              ? `#${result.model.parentCategory.slug}:${result.model.slug}`
+              : `#${result.model.slug}`;
+            this.fullSlugForCategoryMap[
+              result.model.id
+            ] = `${this.prefix}${fullSlug}`;
           }
         });
+
         this.suggestionType =
           SUGGESTION_KEYWORD_MAP[this.args.suggestionKeyword];
         break;
       case "@":
-        //when only one user matches while in topic
-        //quick suggest user search in the topic or globally
-        if (
-          this.args.results.length === 1 &&
-          this.router.currentRouteName.startsWith("topic.")
-        ) {
-          const user = this.args.results[0];
-          //content.push(
-          //this.attach("search-menu-assistant-item", {
-          //prefix,
-          //user,
-          //setTopicContext: true,
-          //slug: `${prefix}@${user.username}`,
-          //suffix: h(
-          //"span.label-suffix",
-          //` ${I18n.t("search.in_this_topic")}`
-          //),
-          //})
-          //);
-          //content.push(
-          //this.attach("search-menu-assistant-item", {
-          //extraHint: I18n.t("search.enter_hint"),
-          //prefix,
-          //user,
-          //slug: `${prefix}@${user.username}`,
-          //suffix: h(
-          //"span.label-suffix",
-          //` ${I18n.t("search.in_topics_posts")}`
-          //),
-          //})
-          //);
-        } else {
-          this.args.results.forEach((user) => {
-            //content.push(
-            //this.attach("search-menu-assistant-item", {
-            //prefix,
-            //user,
-            //slug: `${prefix}@${user.username}`,
-            //})
-            //);
-          });
+        // when only one user matches while in topic
+        // quick suggest user search in the topic or globally
+        if (this.userMatchesInTopic) {
+          this.user = this.args.results[0];
         }
+
         this.suggestionType =
           SUGGESTION_KEYWORD_MAP[this.args.suggestionKeyword];
         break;
-      default:
-        suggestionShortcuts.forEach((item) => {
-          if (item.includes(suggestionKeyword) || !suggestionKeyword) {
-            //content.push(
-            //this.attach("search-menu-assistant-item", {
-            //slug: `${prefix}${item}`,
-            //})
-            //);
-          }
-        });
-        break;
     }
+    // SOMEHOW WE NEED TO ONLY RENDER 8 OPTIONS
     //return content.filter((c, i) => i <= 8);
   }
 }
