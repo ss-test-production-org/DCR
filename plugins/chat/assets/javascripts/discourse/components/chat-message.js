@@ -103,7 +103,7 @@ export default class ChatMessage extends Component {
   }
 
   _refreshStatusesOnMentions() {
-    this._refreshedMessage(this.message);
+    this.decorateCookedMessage();
   }
 
   @action
