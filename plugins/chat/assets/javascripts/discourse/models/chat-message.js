@@ -89,33 +89,7 @@ export default class ChatMessage {
       );
     } else {
       console.log("there's no mentioned_users");
-      const user1 = {
-        id: 2,
-        username: "andrei1",
-        avatar_template: "/letter_avatar_proxy/v4/letter/a/ecd19e/{size}.png",
-        status: {
-          description: "hg",
-          emoji: "test_tube",
-          ends_at: null
-        }
-      };
-
-      const user2 = {
-        id: 3,
-        username: "andrei2",
-        avatar_template: "/letter_avatar_proxy/v4/letter/a/b5a626/{size}.png",
-        status: {
-          description: "ds",
-          emoji: "bubble_tea",
-          ends_at: "2023-04-20T19:39:17.212Z"
-        }
-      };
-
-      const mentioned_users = [user1, user2];
-
-      this.mentionedUsers = mentioned_users.map((userData) =>
-        User.create(userData)
-      );
+      this.mentionedUsers = [];
     }
   }
 

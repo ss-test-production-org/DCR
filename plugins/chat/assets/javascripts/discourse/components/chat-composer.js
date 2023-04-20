@@ -657,7 +657,32 @@ export default Component.extend(TextareaTextManipulation, {
     // the value here on send.
     const _previousValue = this.value;
     this.set("value", "");
-    return this.sendMessage(_previousValue, this._uploads)
+
+    const user1 = {
+      id: 2,
+      username: "andrei1",
+      avatar_template: "/letter_avatar_proxy/v4/letter/a/ecd19e/{size}.png",
+      status: {
+        description: "hg",
+        emoji: "test_tube",
+        ends_at: null
+      }
+    };
+
+    const user2 = {
+      id: 3,
+      username: "andrei2",
+      avatar_template: "/letter_avatar_proxy/v4/letter/a/b5a626/{size}.png",
+      status: {
+        description: "ds",
+        emoji: "bubble_tea",
+        ends_at: "2023-04-20T19:39:17.212Z"
+      }
+    };
+
+    const mentionedUsers = [user1, user2];
+
+    return this.sendMessage(_previousValue, this._uploads, mentionedUsers)
       .then(this.reset)
       .catch(() => {
         this.set("value", _previousValue);

@@ -568,7 +568,7 @@ export default class ChatLivePane extends Component {
   }
 
   @action
-  sendMessage(message, uploads = []) {
+  sendMessage(message, uploads = [], mentionedUsers = []) {
     resetIdle();
 
     if (this.chatChannelPane.sendingLoading) {
@@ -608,6 +608,7 @@ export default class ChatLivePane extends Component {
       message,
       created_at: moment.utc().format(),
       uploads: cloneJSON(uploads),
+      mentioned_users: mentionedUsers,
       user: this.currentUser,
     });
 
