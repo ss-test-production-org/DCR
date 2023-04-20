@@ -1,13 +1,13 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'pathname'
+require "pathname"
 
 RAILS_ROOT = File.expand_path("../../", Pathname.new(__FILE__).realpath)
 PORT = ENV["UNICORN_PORT"] ||= "3000"
 HOSTNAME = ENV["DISCOURSE_HOSTNAME"] ||= "127.0.0.1"
 YARN_DIR = File.join(RAILS_ROOT, "app/assets/javascripts/discourse")
-CUSTOM_ARGS = ["--try", "--test", "--build", "--unicorn", "-u", "--forward-host"]
+CUSTOM_ARGS = %w[--try --test --build --unicorn -u --forward-host]
 PROXY =
   if ARGV.include?("--try")
     "https://try.discourse.org"
@@ -56,12 +56,10 @@ if !args.include?("test") && !args.include?("build") && !args.include?("--proxy"
   args << PROXY
 end
 
-exit 1 if !system "yarn -s install --cwd #{YARN_DIR}"
+exit 1 if !system "yarn -s install"
 
 yarn_env = {}
-if ARGV.include?("--forward-host")
-  yarn_env["FORWARD_HOST"] = "true"
-end
+yarn_env["FORWARD_HOST"] = "true" if ARGV.include?("--forward-host")
 
 if ARGV.include?("-u") || ARGV.include?("--unicorn")
   unicorn_env = { "DISCOURSE_PORT" => ENV["DISCOURSE_PORT"] || "4200" }
@@ -69,12 +67,13 @@ if ARGV.include?("-u") || ARGV.include?("--unicorn")
   ember_cli_pid = nil
 
   Thread.new do
-    require 'open3'
+    require "open3"
     Open3.popen2e(yarn_env, "yarn", *args.to_a.flatten) do |i, oe, t|
       ember_cli_pid = t.pid
       puts "Ember CLI running on PID: #{ember_cli_pid}"
       oe.each do |line|
-        if line.include?("\e[32m200\e") || line.include?("\e[36m304\e[0m") || line.include?("POST /message-bus")
+        if line.include?("\e[32m200\e") || line.include?("\e[36m304\e[0m") ||
+             line.include?("POST /message-bus")
           # skip 200s and 304s and message bus
         else
           puts line
