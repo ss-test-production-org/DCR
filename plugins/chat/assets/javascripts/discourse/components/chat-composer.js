@@ -44,6 +44,7 @@ export default Component.extend(TextareaTextManipulation, {
   isNetworkUnreliable: reads("chat.isNetworkUnreliable"),
   typingMention: false,
   chatComposerWarningsTracker: service(),
+  mentionedUsers: [],
 
   @discourseComputed(...chatComposerButtonsDependentKeys())
   inlineButtons() {
@@ -353,7 +354,10 @@ export default Component.extend(TextareaTextManipulation, {
         width: "100%",
         treatAsTextarea: true,
         autoSelectFirstSuggestion: true,
-        transformComplete: (v) => v.username || v.name,
+        transformComplete: (user) => {
+          this.mentionedUsers.push(user);
+          return user.username || user.name;
+        },
         dataSource: (term) => {
           return userSearch({ term, includeGroups: true }).then((result) => {
             if (result?.users?.length > 0) {
@@ -658,31 +662,7 @@ export default Component.extend(TextareaTextManipulation, {
     const _previousValue = this.value;
     this.set("value", "");
 
-    const user1 = {
-      id: 2,
-      username: "andrei1",
-      avatar_template: "/letter_avatar_proxy/v4/letter/a/ecd19e/{size}.png",
-      status: {
-        description: "hg",
-        emoji: "test_tube",
-        ends_at: null
-      }
-    };
-
-    const user2 = {
-      id: 3,
-      username: "andrei2",
-      avatar_template: "/letter_avatar_proxy/v4/letter/a/b5a626/{size}.png",
-      status: {
-        description: "ds",
-        emoji: "bubble_tea",
-        ends_at: "2023-04-20T19:39:17.212Z"
-      }
-    };
-
-    const mentionedUsers = [user1, user2];
-
-    return this.sendMessage(_previousValue, this._uploads, mentionedUsers)
+    return this.sendMessage(_previousValue, this._uploads, this.mentionedUsers)
       .then(this.reset)
       .catch(() => {
         this.set("value", _previousValue);
