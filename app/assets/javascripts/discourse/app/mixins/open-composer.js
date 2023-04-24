@@ -5,6 +5,14 @@ import Mixin from "@ember/object/mixin";
 export default Mixin.create({
   openComposer(controller) {
     let categoryId = controller.get("category.id");
+
+    if (
+      !controller.canCreateTopicOnCategory &&
+      this.siteSettings.default_subcategory_on_read_only_category
+    ) {
+      categoryId = controller.get("defaultSubcategory.id");
+    }
+
     if (
       categoryId &&
       controller.category.isUncategorizedCategory &&
