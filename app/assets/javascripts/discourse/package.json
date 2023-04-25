@@ -14,7 +14,7 @@
     "build": "ember build",
     "start": "ember serve",
     "test": "ember test",
-    "postinstall": "yarn --silent --cwd .. patch-package"
+    "postinstall": "yarn --silent --cwd .. patch-package && yarn --cwd ../node_modules/ember-this-fallback install && yarn --cwd ../node_modules/ember-this-fallback build:ts"
   },
   "dependencies": {
     "@babel/core": "^7.21.4",
@@ -76,6 +76,7 @@
     "ember-rfc176-data": "^0.3.18",
     "ember-source": "~3.28.11",
     "ember-test-selectors": "^6.0.0",
+    "ember-this-fallback": "https://github.com/tildeio/ember-this-fallback#this-fallback-plugin",
     "eslint": "^8.39.0",
     "eslint-plugin-qunit": "^7.3.4",
     "handlebars": "^4.7.7",
