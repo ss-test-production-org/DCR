@@ -4088,9 +4088,9 @@ ember-cli-version-checker@^5.1.1, ember-cli-version-checker@^5.1.2:
     semver "^7.3.4"
     silent-error "^1.1.1"
 
-ember-cli@~4.12.5:
-  version "4.12.5"
-  resolved "https://registry.yarnpkg.com/ember-cli/-/ember-cli-4.12.5.tgz#cf52e446a78ee2436118a22347a6dc830912cbc0"
+ember-cli@~4.12.9:
+  version "4.12.9"
+  resolved "https://registry.yarnpkg.com/ember-cli/-/ember-cli-4.12.9.tgz#cf52e446a78ee2436118a22347a6dc830912cbc0"
   integrity sha512-4b8F6w1xwyLaukiNIq+LzqgaMXEIj1gib/OeCCqLtav4tnOgcj5xKtZ6ZRypUZq92BoSN7j5Tq21Z1kWWcMsZQ==
   dependencies:
     "@babel/core" "^7.21.0"
